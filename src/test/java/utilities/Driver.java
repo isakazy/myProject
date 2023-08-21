@@ -33,7 +33,7 @@ public class Driver {
 
             driver.manage().window().maximize();
             driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(12));
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(12));
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(4));
             driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
 
             return driver;
