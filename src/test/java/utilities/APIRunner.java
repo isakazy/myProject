@@ -22,7 +22,7 @@ public class APIRunner {
         ObjectMapper mapper = new ObjectMapper();
         try {
             customResponse = mapper.readValue(response.asString(), CustomResponse.class);
-            customResponse.setStatus(response.statusCode());
+            //customResponse.setStatus(response.statusCode());
             customResponse.setResponseBody(response.asString());
         } catch (JsonProcessingException e) {
             System.out.println("Probably list response");
