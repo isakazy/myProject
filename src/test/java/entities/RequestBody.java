@@ -6,10 +6,11 @@ import lombok.Data;
 public class RequestBody {
     private String email;
     private String password;
-
     private String category_title;
     private String category_description;
     private Boolean flag;
+    private String created;
+
 
     // CashwiseSellesTests
 

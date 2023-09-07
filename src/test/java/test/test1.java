@@ -373,6 +373,16 @@ public class test1 {
      Assert.assertEquals(response.statusCode(), 200 );
      response.prettyPrint();
  }
+
+ @Test
+    public void JSONPath(){
+     String token = CashwiseAuthorization.getToken();
+     Response response = RestAssured.given().auth().oauth2(token).get(Config.getValue("cashWiseApi") + "/api/myaccount/categories/income") ;
+     response.statusCode();
+     response.jsonPath().getList("JSON[0].SELLER_ID");
+ }
+
+
 }
 
 
