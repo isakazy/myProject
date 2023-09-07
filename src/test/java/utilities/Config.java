@@ -9,7 +9,7 @@ public class Config {
     static {
         properties = new Properties();
         try {
-            FileInputStream fileInputStream = new FileInputStream("C:\\Users\\isaka\\myProject\\src\\test\\resources\\Configuration.properties");
+            FileInputStream fileInputStream = new FileInputStream("src/test/resources/Configuration.properties");
             properties.load(fileInputStream);
             fileInputStream.close();
 

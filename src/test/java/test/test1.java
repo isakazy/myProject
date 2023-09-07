@@ -4,8 +4,10 @@ package test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import entities.CustomResponse;
+import entities.RequestBody;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.bouncycastle.crypto.agreement.jpake.JPAKEUtil;
 import org.junit.Assert;
@@ -18,6 +20,7 @@ import org.openqa.selenium.interactions.Actions;
 import pages.cashWise;
 import utilities.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -106,6 +109,9 @@ public class test1 {
      cashWise cashWise = new cashWise();
      Faker faker = new Faker();
      Driver.getDriver().get(Config.getValue("cashWise"));
+     cashWise.language.click();
+     cashWise.english.click();
+     ApplicationFlow.pause(500);
      cashWise.singUP.click();
      Assert.assertTrue(cashWise.singUpPopUp.isDisplayed());
 
@@ -125,21 +131,247 @@ public class test1 {
      cashWise.USD.click();
      cashWise.singUpLast.click();
 
-     String url = "https://cashwise.us/dashboard";
+     String url = "https://cashwise.us/dashboard/infographics";
      ApplicationFlow.pause(1000);
      Assert.assertEquals(url, Driver.getDriver().getCurrentUrl());
 
 
  }
+ @Test
+ public void listOfSellers(){
+        String token = CashwiseAuthorization.getToken();
+        String url = "https://backend.cashwise.us/api/myaccount/sellers/all";
+        Response response = RestAssured.given().auth().oauth2(token).get(url);
+        System.out.println(response.statusCode());
+
+        int size = response.jsonPath().getList("JSON").size();
+
+        for(int i = 0; i < size; i ++  ){
+          String name =  response.jsonPath().getString("[" + i + "].seller_name" );
+            Assert.assertFalse(name.isEmpty());
+
+        }
+
+
+ }
+
+ @Test
+    public void generateToken(){
+        String url = "https://backend.cashwise.us/api/myaccount/auth/login";
+     RequestBody requestBody = new RequestBody();
+     requestBody.setEmail("isakazy@gmail.com");
+     requestBody.setPassword("isakazyamanbaev");
+     Response response = RestAssured.given().contentType(ContentType.JSON).body(requestBody).post(url);
+     System.out.println(response.statusCode());
+     String token = response.jsonPath().getString("jwt_token");
+     System.out.println(token);
+ }
+
+
+
 
 
  @Test
     public void API(){
-        CustomResponse customResponse = new CustomResponse();
-     String endPoint = "https://reqres.in/api/users?page=2";
-     Response response = RestAssured.get(endPoint);
+     String endPoint = Config.getValue("cashWiseApi") + "/api/myaccount/sellers/all";
+     String token = CashwiseAuthorization.getToken();
+     Response response = RestAssured.given().auth().oauth2(token).get(endPoint);
+     System.out.println(response.statusCode());
+   //  response.prettyPrint();
+     int size = response.jsonPath().getList("JSON").size();
+     System.out.print(size);
+
+     for(int i= 0; i < size;  i ++ ){
+         String email = response.jsonPath().getString("[" + i + "].email");
+         System.out.println(email);
+     }
+
+     Assert.assertEquals(response.statusCode(), 200 );
+ }
+
+ @Test
+    public void APiDelete(){
+        String token = CashwiseAuthorization.getToken();
+        String url = Config.getValue("cashWiseApi") + "us/api/myaccount/sellers/88";
+        Response response = RestAssured.given().auth().oauth2(token).delete(url);
+        System.out.println(response.statusCode());
+        String email = response.jsonPath().getString("email");
+        String date = response.jsonPath().getString("created");
+        Assert.assertFalse(email.endsWith("reqres.com"));
+       String  day = date.substring(8);
+       int number = Integer.parseInt(day);
+       Assert.assertTrue(number >= 22 );
+
+
+        response.prettyPrint();
+
+ }
+ @Test
+    public void getSeller(){
+     String token = Config.getValue("cashWiseToken");
+     String url = Config.getValue("cashWiseApi") + "/api/myaccount/sellers/88";
+     Response response = RestAssured.given().auth().oauth2(token).get(url);
+     System.out.println(response.statusCode());
+     response.jsonPath().getString("email");
+ }
+
+ @Test
+    public void getAllSellers(){
+       String token = CashwiseAuthorization.getToken();
+       String url = Config.getValue("cashWiseApi")+ "/api/myaccount/sellers/all";
+       Response response = RestAssured.given().auth().oauth2(token).get(url);
+     System.out.println(response.statusCode());
      response.prettyPrint();
-     System.out.println(customResponse.getLast_name());
+
+ }
+
+ @Test
+    public void updateSeller(){
+        RequestBody requestBody = new RequestBody();
+        String token = CashwiseAuthorization.getToken();
+        String url = Config.getValue("cashWiseApi")+ "/api/myaccount/sellers/94";
+        requestBody.setCompany_name("AZAT");
+        requestBody.setSeller_name("Ubaidylbek");
+        requestBody.setEmail("ubaidylbek@gamil.com");
+        requestBody.setPhone_number("702 94 49 24");
+        requestBody.setAddress("frunze 269");
+        Response response = RestAssured.given().auth().oauth2(token).contentType(ContentType.JSON).body(requestBody).put(url);
+       // System.out.println(response.statusCode());
+        Assert.assertEquals(response.statusCode(), 200);
+
+        try{
+            response = RestAssured.given().auth().oauth2(token).get(Config.getValue("cashWiseApi") + "/api/myaccount/sellers/94" );
+            String companyName = response.jsonPath().getString("company_name");
+            Assert.assertEquals(companyName, "AZAT");
+        }
+        catch (Exception e){
+            System.out.println(response.statusCode());
+        }
+        finally {
+            response.prettyPrint();
+        }
+
+ }
+
+ @Test
+    public void PostSeller(){
+        Faker faker = new Faker();
+        String url = Config.getValue("cashWiseApi") + "/api/myaccount/sellers";
+        String token = CashwiseAuthorization.getToken();
+        RequestBody requestBody = new RequestBody();
+        requestBody.setCompany_name(faker.company().name());
+        requestBody.setSeller_name(faker.name().firstName());
+        requestBody.setEmail(faker.internet().emailAddress());
+        requestBody.setPhone_number(faker.phoneNumber().phoneNumber());
+        requestBody.setAddress(faker.address().fullAddress());
+
+        Response response = RestAssured.given().auth().oauth2(token).contentType(ContentType.JSON).body(requestBody).post(url);
+     Assert.assertEquals(200, response.statusCode());
+
+     try{
+         response = RestAssured.given().auth().oauth2(token).get(Config.getValue("cashWiseApi") + "/api/myaccount/sellers/all" );
+         int size = response.jsonPath().getList("JSON").size();
+         boolean companyFound = false;
+
+       for(int i = 0; i < size; i ++ ) {
+          String companyName = response.jsonPath().getString("[" + i + "].company_name" );
+          if("doorDash".equals(companyName)){
+              companyFound = true;
+          }
+       }
+       Assert.assertTrue(companyFound);
+
+     }
+     catch (Exception e){
+         response.statusCode();
+     }
+ }
+
+
+ @Test
+    public void postSellerTwo(){
+        String url = Config.getValue("cashWiseApi") + "/api/myaccount/sellers";
+        String token = CashwiseAuthorization.getToken();
+
+        RequestBody requestBody = new RequestBody();
+        requestBody.setCompany_name("samsung");
+        requestBody.setSeller_name("du ho choi");
+        requestBody.setEmail("samdfdasdassfa@gmail.com");
+        requestBody.setPhone_number("312231241241");
+        requestBody.setAddress("korea ");
+
+        Response response = RestAssured.given().auth().oauth2(token).contentType(ContentType.JSON).body(requestBody).post(url);
+     Assert.assertEquals(response.statusCode(), 200);
+
+        try{
+            response = RestAssured.given().auth().oauth2(token).get(Config.getValue("cashWiseApi") +"/api/myaccount/sellers/all");
+            int size = response.jsonPath().getList("JSON").size();
+            boolean companyFound = false;
+            for(int i = 0; i < size; i ++ ){
+                String company = response.jsonPath().getString("["+ i + "].company_name");
+                if(company.equals("samsung")){
+                    companyFound = true;
+                }
+            }
+            Assert.assertTrue(companyFound);
+        }
+        catch (Exception e ){
+            response.statusCode();
+        }
+        finally {
+            response.prettyPrint();
+        }
+
+
+ }
+
+ @Test
+    public void getListOfBankAccounts(){
+        String url = Config.getValue("cashWiseApi")+ "/api/myaccount/bankaccount";
+        String token = CashwiseAuthorization.getToken();
+        Response response = RestAssured.given().auth().oauth2(token).get(url);
+     System.out.println(response.statusCode());
+     response.prettyPrint();
+
+ }
+
+ @Test
+    public void PostProduct(){
+        String url = Config.getValue("cashWiseApi")+ "/api/myaccount/products";
+        String token = CashwiseAuthorization.getToken();
+
+       HashMap <String, Object> params = new HashMap<>();
+       params.put("page", 1 );
+       params.put("size", 20);
+
+       Response response =  RestAssured.given().auth().oauth2(token).contentType(ContentType.JSON).params(params).get(url);
+     System.out.println(response.statusCode());
+     response.prettyPrint();
+ }
+
+
+ @Test
+    public void GetAllSellers(){
+     String url = Config.getValue("cashWiseApi")+ "/api/myaccount/sellers";
+     String token = CashwiseAuthorization.getToken();
+     HashMap<String, Object> params = new HashMap<>();
+     params.put("isArchived", false);
+     params.put("page", 1);
+     params.put("size", 40);
+     Response response = RestAssured.given().auth().oauth2(token).contentType(ContentType.JSON).params(params).get(url);
+     System.out.println(response.statusCode());
+     response.prettyPrint();
+     Assert.assertEquals(200, response.statusCode());
+ }
+
+
+ @Test
+    public void GetSingleSeller(){
+     String url = Config.getValue("cashWiseApi")+ "/api/myaccount/sellers/1604";
+     String token = CashwiseAuthorization.getToken();
+     Response response = RestAssured.given().auth().oauth2(token).get(url);
+     Assert.assertEquals(response.statusCode(), 200 );
+     response.prettyPrint();
  }
 }
 

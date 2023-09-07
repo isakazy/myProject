@@ -60,5 +60,11 @@ public class cashWise {
     public WebElement singUpLast;
 
 
+    @FindBy(xpath = "(//p)[3]")
+  public WebElement language;
+
+    @FindBy(xpath = "//li[1]")
+  public WebElement english;
+
 }
 

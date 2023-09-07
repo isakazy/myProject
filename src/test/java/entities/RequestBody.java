@@ -22,4 +22,19 @@ public class RequestBody {
     private int balance;
     private String bank_account_name;
     private String description;
+
+    // products
+
+
+        private String product_title;
+            private String product_price;
+            private String product_description;
+
+
+
+
+
+
+
+
 }
