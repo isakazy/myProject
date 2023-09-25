@@ -10,14 +10,20 @@ import io.cucumber.java.hu.Ha;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.bouncycastle.crypto.agreement.jpake.JPAKEUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import pages.cashWise;
 import utilities.*;
 
+import java.security.Key;
 import java.util.HashMap;
 import java.util.List;
 
@@ -68,11 +74,11 @@ public class test1 {
         ApplicationFlow.pause(1000);
         actions.moveToElement(Driver.getDriver().findElement(By.xpath("//canvas"))).click().clickAndHold().moveToElement(Driver.getDriver().findElement(By.xpath("//span[.=' Free ground shipping on orders over $50.']"))).release().perform();
         ApplicationFlow.pause(1000);
-     actions.moveToElement(Driver.getDriver().findElement(By.xpath("//canvas"))).click().clickAndHold().moveToElement(Driver.getDriver().findElement(By.xpath("//a/span[@class='icon icon-profile']"))).release().perform();
-     ApplicationFlow.pause(1000);
-     actions.moveToElement(Driver.getDriver().findElement(By.xpath("//canvas"))).click().clickAndHold().moveToElement(Driver.getDriver().findElement(By.xpath("//div[.='Share & Save']"))).release().perform();
-     ApplicationFlow.pause(1000);
-     actions.moveToElement(Driver.getDriver().findElement(By.xpath("//canvas"))).click().clickAndHold().moveToElement(Driver.getDriver().findElement(By.xpath("//div[.='Sheath']"))).release().perform();
+        actions.moveToElement(Driver.getDriver().findElement(By.xpath("//canvas"))).click().clickAndHold().moveToElement(Driver.getDriver().findElement(By.xpath("//a/span[@class='icon icon-profile']"))).release().perform();
+        ApplicationFlow.pause(1000);
+        actions.moveToElement(Driver.getDriver().findElement(By.xpath("//canvas"))).click().clickAndHold().moveToElement(Driver.getDriver().findElement(By.xpath("//div[.='Share & Save']"))).release().perform();
+        ApplicationFlow.pause(1000);
+        actions.moveToElement(Driver.getDriver().findElement(By.xpath("//canvas"))).click().clickAndHold().moveToElement(Driver.getDriver().findElement(By.xpath("//div[.='Sheath']"))).release().perform();
 
  }
 
@@ -144,8 +150,8 @@ public class test1 {
 
         int size = response.jsonPath().getList("JSON").size();
 
-        for(int i = 0; i < size; i ++  ){
-          String name = response.jsonPath().getString("[" + i + "].seller_name" );
+        for (int i = 0; i < size; i++) {
+            String name = response.jsonPath().getString("[" + i + "].seller_name");
             Assert.assertFalse(name.isEmpty());
 
         }
@@ -178,11 +184,11 @@ public class test1 {
      System.out.println(response.statusCode());
    //  response.prettyPrint();
      int size = response.jsonPath().getList("JSON").size();
-    
+
      for(int i= 0; i < size;  i ++ ){
          String email = response.jsonPath().getString("[" + i + "].seller_name");
-         System.out.println(email);
-     }
+            System.out.println(email);
+        }
 
      Assert.assertEquals(response.statusCode(), 200 );
  }
@@ -379,7 +385,7 @@ public class test1 {
      Response response = RestAssured.given().auth().oauth2(token).get(Config.getValue("cashWiseApi") + "/api/myaccount/categories/income") ;
      response.statusCode();
      response.jsonPath().getList("JSON[0].SELLER_ID");
-     
+
  }
 
  @Test
@@ -447,11 +453,60 @@ public class test1 {
         }
 
 
+
+    @Test
+    public void Test() throws JsonProcessingException {
+        String token = CashwiseAuthorization.getToken();
+        String url = Config.getValue("cashWiseApi") + "/api/myaccount/sellers";
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("isArchived", false);
+        params.put("page", 1);
+        params.put("size", 30);
+        Response response = RestAssured.given().auth().oauth2(token).contentType(ContentType.JSON).params(params).get(url);
+        System.out.println(response.statusCode());
+
+        ObjectMapper mapper = new ObjectMapper();
+        CustomResponse customResponse = mapper.readValue(response.asString(), CustomResponse.class);
+
+        boolean isPresent = false;
+        for (CustomResponse sellerId : customResponse.getResponses()) {
+            if (sellerId.getSeller_id() == 88) {
+                isPresent = true;
+                break;
+            }
+        }
+        Assert.assertTrue(isPresent);
+    }
+
+
+    @Test
+    public void sellerName() throws JsonProcessingException {
+        String token = CashwiseAuthorization.getToken();
+        String url = Config.getValue("cashWiseApi") + "/api/myaccount/sellers";
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("isArchived", false);
+        params.put("page", 1);
+        params.put("size", 30);
+        Response response = RestAssured.given().auth().oauth2(token).contentType(ContentType.JSON).params(params).get(url);
+        System.out.println(response.statusCode());
+
+        ObjectMapper mapper = new ObjectMapper();
+        CustomResponse customResponse = mapper.readValue(response.asString(), CustomResponse.class);
+
+        boolean isPresent = false;
+        for (CustomResponse names : customResponse.getResponses()) {
+
+            if (names.getSeller_name().equals("Anara")) {
+                isPresent = true;
+                break;
+            }
+        }
+        Assert.assertTrue(isPresent);
+    }
+
+
 }
-
-
-
-
 
 
 
