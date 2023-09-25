@@ -1,6 +1,7 @@
 package pages;
 
 import io.cucumber.java.zh_cn.假如;
+import org.bouncycastle.jcajce.provider.asymmetric.X509;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -12,6 +13,25 @@ public class cashWise {
       PageFactory.initElements(Driver.getDriver(), this );
   }
 
+
+  @FindBy(xpath = "//button[.='Log out']")
+  public WebElement logOutButton;
+  @FindBy(xpath = "//p[.='Log out from smokewise']")
+  public WebElement logOutAlert;
+  @FindBy(xpath = "//ul/li[.='Log out']")
+  public WebElement logOutLink;
+  @FindBy(xpath = "(//p)[3]")
+  public WebElement logOutDropDown;
+  @FindBy(xpath = "//p[.='Please enter a valid email address']")
+ public WebElement pleaseEnterCorrectUsernameText;
+  @FindBy(xpath = "//p[.='Wrong password or email']")
+  public WebElement wrongPassOrEmailText;
+  @FindBy(xpath = "//h2[.='smokewise']")
+  public WebElement smokeWiseText;
+  @FindBy(xpath = "//h3[.='Sign in']")
+  public WebElement singInPupUp;
+  @FindBy(xpath = "//button[.='Sign in']")
+  public WebElement singIn;
   @FindBy(xpath = "(//button[.='Sign up'])[2]" )
     public WebElement singUP;
 
@@ -65,6 +85,8 @@ public class cashWise {
 
     @FindBy(xpath = "//li[1]")
   public WebElement english;
+    @FindBy(xpath = "(//button[.='Sign in'])[2]")
+  public  WebElement singInTwo;
 
 }
 

@@ -9,8 +9,8 @@ import org.junit.runner.RunWith;
     plugin={"html:target/reports/cucumber.html","json:target/reports/cucumber.json"},
         glue="steps",
         features="src/test/resources/features",
-        tags = "@DbTest2",
-        dryRun= true
+        tags = "@validateEmail",
+        dryRun= false
             )
 public class CucumberRunner {
 

@@ -1,20 +1,18 @@
 package test;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import entities.CustomResponse;
 import entities.RequestBody;
-import io.github.bonigarcia.wdm.WebDriverManager;
+import io.cucumber.java.hu.Ha;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.bouncycastle.crypto.agreement.jpake.JPAKEUtil;
 import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import pages.cashWise;
@@ -147,7 +145,7 @@ public class test1 {
         int size = response.jsonPath().getList("JSON").size();
 
         for(int i = 0; i < size; i ++  ){
-          String name =  response.jsonPath().getString("[" + i + "].seller_name" );
+          String name = response.jsonPath().getString("[" + i + "].seller_name" );
             Assert.assertFalse(name.isEmpty());
 
         }
@@ -165,6 +163,7 @@ public class test1 {
      System.out.println(response.statusCode());
      String token = response.jsonPath().getString("jwt_token");
      System.out.println(token);
+
  }
 
 
@@ -179,10 +178,9 @@ public class test1 {
      System.out.println(response.statusCode());
    //  response.prettyPrint();
      int size = response.jsonPath().getList("JSON").size();
-     System.out.print(size);
-
+    
      for(int i= 0; i < size;  i ++ ){
-         String email = response.jsonPath().getString("[" + i + "].email");
+         String email = response.jsonPath().getString("[" + i + "].seller_name");
          System.out.println(email);
      }
 
@@ -208,11 +206,12 @@ public class test1 {
  }
  @Test
     public void getSeller(){
-     String token = Config.getValue("cashWiseToken");
+     String token = CashwiseAuthorization.getToken();
      String url = Config.getValue("cashWiseApi") + "/api/myaccount/sellers/88";
      Response response = RestAssured.given().auth().oauth2(token).get(url);
      System.out.println(response.statusCode());
-     response.jsonPath().getString("email");
+     response.prettyPrint();
+   //  response.jsonPath().getString("email");
  }
 
  @Test
@@ -380,9 +379,79 @@ public class test1 {
      Response response = RestAssured.given().auth().oauth2(token).get(Config.getValue("cashWiseApi") + "/api/myaccount/categories/income") ;
      response.statusCode();
      response.jsonPath().getList("JSON[0].SELLER_ID");
+     
  }
+
+ @Test
+    public void seleniumNavigateTest() throws InterruptedException {
+
+        Driver.getDriver().get(Config.getValue("guru99"));
+        Driver.getDriver().navigate().to("https://demo.guru99.com/test/guru99home/");
+
+        Driver.getDriver().navigate().back();
+ }
+
+    @Test
+    public void allSellersJson(){
+        String token = CashwiseAuthorization.getToken();
+        String url = "https://backend.cashwise.us/api/myaccount/sellers/all";
+        Response response = RestAssured.given().auth().oauth2(token).get(url);
+        int size = response.jsonPath().getList("JSON").size();
+        System.out.println(response.statusCode());
+        for(int i = 0; i < size; i ++){
+          String name =   response.jsonPath().getString("[" + i + "].seller_name");
+            System.out.println(name);
+            }
+        }
+
+        @Test
+    public void PostSeller2(){
+        // the code is not finished. finish the code
+            RequestBody body = new RequestBody();
+            body.setCompany_name("waterfall ");
+            body.setSeller_name("kukushka");
+            body.setEmail("kuhka@gmail.com");
+            body.setPhone_number("00000000001");
+            body.setAddress("howlwo");
+        String token = CashwiseAuthorization.getToken();
+        String endPoint = Config.getValue("cashWiseApi") + "/api/myaccount/sellers";
+        Response response = RestAssured.given().auth().oauth2(token).contentType(ContentType.JSON).body(body).post(endPoint);
+            Assert.assertEquals(200, response.statusCode());
+
+            System.out.println(response = RestAssured.given().auth().oauth2(token).get(Config.getValue("cashWiseApi") + "/api/myaccount/sellers/all"));
+            System.out.println(response.statusCode());
+            response.prettyPrint();
+
+        }
+
+        @Test
+        public void ConfirmName() throws JsonProcessingException {
+            String token = CashwiseAuthorization.getToken();
+            Response  response = RestAssured.given().auth().oauth2(token).get(Config.getValue("cashWiseApi") + "/api/myaccount/sellers/all");
+
+            int size = response.jsonPath().getList("JSON").size();
+            boolean isFound = false;
+            for(int i = 0; i < size; i ++ ){
+          String name = response.jsonPath().getString("["+ i +"].seller_name");
+          if(name.equals("Elnura Alinova")){
+              isFound = true;
+              break;
+          }
+            }
+            Assert.assertTrue(isFound);
+
+
+
+
+
+        }
 
 
 }
+
+
+
+
+
 
 
