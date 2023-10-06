@@ -95,14 +95,14 @@ public class getSellersTest {
 
 
 
-    // THE TEST IF FAILING BECAUSE THERE ARE SELLERS WITH NULL EMAIL
+    // THE TEST Is FAILING BECAUSE THERE ARE SELLERS WITH NULL EMAIL
     @Then("verify sellers email end with {string}")
     public void verify_sellers_email_end_with(String dotCom) {
         int size = response.jsonPath().getList("JSON").size();
         boolean endWith = false;
         for(int i = 0; i < size; i ++ ){
             String end = response.jsonPath().getString("["+ i +"].email");
-            if(end != null && end.length() >= 3 ){
+            if(end == null && end.length() >= 3 ){
                 String com =  end.substring(end.length() - 3);
                 if(com.equals(dotCom)){
                     endWith = true;

@@ -8,7 +8,10 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import utilities.Driver;
 
+import java.util.Arrays;
+
 public class cashWise {
+
   public cashWise(){
       PageFactory.initElements(Driver.getDriver(), this );
   }
@@ -18,7 +21,7 @@ public class cashWise {
   public WebElement logOutButton;
   @FindBy(xpath = "//p[.='Log out from smokewise']")
   public WebElement logOutAlert;
-  @FindBy(xpath = "//ul/li[.='Log out']")
+  @FindBy(xpath = "//li[.='Log out']")
   public WebElement logOutLink;
   @FindBy(xpath = "(//p)[3]")
   public WebElement logOutDropDown;

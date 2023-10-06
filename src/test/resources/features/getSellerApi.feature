@@ -9,7 +9,7 @@ Feature: get seller and verify the company name
 
 
 
-    @getSeller @getAllSellers
+    @getSeller
       Scenario: hit the api to retrieve all sellers and verify sellerName is not null
       Given the API endpoint is "https://backend.cashwise.us/api/myaccount/sellers/all"
       When  a GET request is sent
@@ -44,5 +44,12 @@ Feature: get seller and verify the company name
               Given the API endpoint is "https://backend.cashwise.us/api/myaccount/sellers/all"
               When a GET request is sent
               Then verify sellers email end with "com"
+
+
+
+
+
+
+
 
 
