@@ -9,7 +9,7 @@ import utilities.Driver;
 public class HomePage {
     WebDriver driver;
     public HomePage(){
-        driver= Driver.getDriver();
+        driver = Driver.getDriver();
         PageFactory.initElements(driver,this);
     }
     @FindBy(xpath = "//li[.='Teachers']")

@@ -102,5 +102,22 @@ public class cashWIseLoginTest {
         Assert.assertEquals(mainUrl, Driver.getDriver().getCurrentUrl());
     }
 
+    @Then("verify the user was logged in")
+    public void verify_the_user_was_logged_in() {
+        ApplicationFlow.pause(3000);
+        String url = "https://cashwise.us/dashboard/infographics";
+        String url1 = Driver.getDriver().getCurrentUrl();
+        Assert.assertEquals(url, url1);
+    }
+
+
+    @Then("verify {string} is displayed")
+    public void verify_is_displayed(String text) {
+       Assert.assertEquals(cash.WrongPasswordOrEmail.getText(), text);
+       Assert.assertTrue(cash.WrongPasswordOrEmail.isDisplayed());
+    }
+
+
+
 
 }

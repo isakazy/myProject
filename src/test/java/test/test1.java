@@ -24,18 +24,21 @@ import pages.cashWise;
 import utilities.*;
 
 import java.security.Key;
+import java.time.Duration;
 import java.util.*;
 
 
 public class test1 {
+    public static void main(String[] args) {
+    }
+
+
     @Test
     public void test1() {
         Driver.getDriver().get(Config.getValue("testLink"));
         Driver.getDriver().switchTo().frame("attentive_creative");
         Driver.getDriver().findElement(By.xpath("//div[@id='page1']/button")).click();
         Driver.getDriver().switchTo().defaultContent();
-
-
     }
 
     @Test
@@ -50,8 +53,6 @@ public class test1 {
         for (int i = 0; i < list.size(); i++) {
             actions.moveToElement(list.get(i)).perform();
             ApplicationFlow.pause(2000);
-
-
         }
 
 
@@ -251,7 +252,6 @@ public class test1 {
         } finally {
             response.prettyPrint();
         }
-
     }
 
     @Test
@@ -536,13 +536,21 @@ public class test1 {
     }
 
     @Test
-    public void guruTest(){
-        String token = CashwiseAuthorization.getToken();
-        String url = "https://backend.cashwise.us/api/myaccount/categories/income";
-        Response response = RestAssured.given().auth().oauth2(token).get(url);
-        response.prettyPrint();
+    public void guruTest() {
+        WebDriver driver = new ChromeDriver();
+        driver.get("https://www.americanexpress.com/");
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(12));
+        driver.findElement(By.xpath("(//label[.='My Account'])[1]")).click();
     }
+
+
 }
+
+
+
+
+
 
 
 

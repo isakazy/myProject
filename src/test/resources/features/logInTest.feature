@@ -41,6 +41,44 @@ Feature: log in functionality test
           Then  verify the user was logged out
 
 
+          @login @logAllUsers
+            Scenario Outline: user logs in multiple valid usernames and verifies all the users are logged in
+            Given user is on the log in page
+            And user clicks on the sing in button
+            Then the sing in pop up must be displayed
+            When when user inputs a valid username "<username>"
+            And user inputs a valid password "<password>"
+            And user clicks on the singTWo in button
+            Then verify the user was logged in
+
+            Examples:
+              | username          | password        |
+              | isakazy@gmail.com | isakazyamanbaev |
+              | ashot@gmail.com   | 12345678        |
+              | lapuh@gmail.com   | 12345678        |
+              | sancho@gmail.com  | 12345678        |
+
+
+  @login @loginMultipleInvalidAccounts
+              Scenario Outline: user tries to log in using invalid passwords and emails
+              Given user is on the log in page
+              And user clicks on the sing in button
+              Then the sing in pop up must be displayed
+              When when user inputs an invalid username "<username>"
+              And user inputs a invalid password "<password>"
+              And user clicks on the singTWo in button
+              Then verify "Wrong password or email" is displayed
+
+              Examples:
+                | username              | password   |
+                | feafwea@gmail.com     | sfsdfafaf  |
+                | sdaggd@gmail.com      | sdfafa     |
+                | wtrt@gmail.com        | gzegaewrew |
+                | gdsfhjo@gmail.com     | agdsgag    |
+                | gadsgdhfgfh@gmail.com | agfhshdhsj |
+
+
+
 
 
 

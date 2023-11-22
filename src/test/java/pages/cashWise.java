@@ -91,5 +91,7 @@ public class cashWise {
     @FindBy(xpath = "(//button[.='Sign in'])[2]")
   public  WebElement singInTwo;
 
+    @FindBy(xpath = "//p[.='Wrong password or email']")
+    public WebElement WrongPasswordOrEmail;
 }
 

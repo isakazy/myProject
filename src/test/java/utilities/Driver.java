@@ -16,17 +16,17 @@ public class Driver {
     public static WebDriver getDriver() {
         if (driver == null) {
             if (browserType.equals("chrome")) {
-             //   ChromeOptions options = new ChromeOptions();
-              //  options.addArguments("--headless");
-                driver = new ChromeDriver(/*options*/);
+              ChromeOptions options = new ChromeOptions();
+               options.addArguments("--headless");
+                driver = new ChromeDriver(options);
             } else if (browserType.equals("firefox")) {
-              //  FirefoxOptions options = new FirefoxOptions();
-             //   options.setHeadless(true);
-                driver = new FirefoxDriver(/*options*/);
+                FirefoxOptions options = new FirefoxOptions();
+                options.setHeadless(true);
+                driver = new FirefoxDriver(options);
             } else if (browserType.equals("edge")) {
-              //  EdgeOptions options = new EdgeOptions();
-               // options.addArguments("--headless");
-                driver = new EdgeDriver(/*options*/);
+               EdgeOptions options = new EdgeOptions();
+               options.addArguments("--headless");
+                driver = new EdgeDriver(options);
             } else {
                 driver = new ChromeDriver();
             }
@@ -34,7 +34,7 @@ public class Driver {
             driver.manage().window().maximize();
             driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(12));
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(4));
-           // driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
+            driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
 
             return driver;
         }
