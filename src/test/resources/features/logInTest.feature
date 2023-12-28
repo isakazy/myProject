@@ -1,6 +1,6 @@
 Feature: log in functionality test
 
-  @login @success
+  @login @success @regression
   Scenario: successful log in
     Given user is on the log in page
     When user clicks on the sing in button
@@ -10,7 +10,7 @@ Feature: log in functionality test
     And user clicks on the singTWo in button
     Then user must be logged in
 
-    @login @invalidPassword
+    @login @invalidPassword @regression
     Scenario: invalid password attempt
       Given user is on the log in page
       When user clicks on the sing in button
@@ -20,7 +20,7 @@ Feature: log in functionality test
       And user clicks on the singTWo in button
       Then wrong email or password text must be displayed
 
-      @login @invalidEmail
+      @login @invalidEmail @regression
       Scenario: invalid email login attempt
         Given user is on the log in page
         When user clicks on the sing in button
@@ -31,7 +31,7 @@ Feature: log in functionality test
         Then wrong email or password text must be displayed
 
 
-        @login @logout
+        @login @logout @regression
           Scenario:  user logs out
           Given user in on the dashboard
           And user clicks on his name
@@ -41,7 +41,7 @@ Feature: log in functionality test
           Then  verify the user was logged out
 
 
-          @login @logAllUsers
+          @login @logAllUsers @regression
             Scenario Outline: user logs in multiple valid usernames and verifies all the users are logged in
             Given user is on the log in page
             And user clicks on the sing in button
@@ -59,7 +59,7 @@ Feature: log in functionality test
               | sancho@gmail.com  | 12345678        |
 
 
-  @login @loginMultipleInvalidAccounts
+  @login @loginMultipleInvalidAccounts @regression
               Scenario Outline: user tries to log in using invalid passwords and emails
               Given user is on the log in page
               And user clicks on the sing in button

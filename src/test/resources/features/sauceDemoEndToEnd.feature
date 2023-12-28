@@ -1,6 +1,6 @@
 Feature:  End to End Test for SauceDemo.com
 
-  @sauceDemoE2E
+  @sauceDemoE2E @regression
   Scenario: user logs in to the sauce demo and successfully places the order.
   Given user is on the login page of sauceDemo
     When user provides a valid userName

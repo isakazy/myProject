@@ -1,6 +1,6 @@
 Feature: get seller and verify the company name
 
-  @getSeller
+  @getSeller @regression
   Scenario: Hit api and get seller and verify the company name
     Given the API endpoint is "https://backend.cashwise.us/api/myaccount/sellers/88"
     When a GET request is sent
@@ -9,7 +9,7 @@ Feature: get seller and verify the company name
 
 
 
-    @getSeller
+    @getSeller @regression
       Scenario: hit the api to retrieve all sellers and verify sellerName is not null
       Given the API endpoint is "https://backend.cashwise.us/api/myaccount/sellers/all"
       When  a GET request is sent
@@ -18,7 +18,7 @@ Feature: get seller and verify the company name
 
 
 
-      @getSeller @getSellerID
+      @getSeller @getSellerID @regression
         Scenario: retrieve all sellers ID and make sure seller id is not 0
         Given the API endpoint is "https://backend.cashwise.us/api/myaccount/sellers/all"
         When  a GET request is sent
@@ -26,20 +26,20 @@ Feature: get seller and verify the company name
         And verify the sellerID is not null
 
 
-        @getSeller @PostSeller
+        @getSeller @PostSeller @regression
           Scenario: post a seller with name Elnura
           Given the API endpoint is "https://backend.cashwise.us/api/myaccount/sellers"
           When a POST request is sent
           Then response status code must be 201
 
-          @getSeller @VerifyName
+          @getSeller @VerifyName @regression
             Scenario: retrieve all sellers and verify Elnura is in the list
             Given the API endpoint is "https://backend.cashwise.us/api/myaccount/sellers/all"
             When a GET request is sent
             Then verify seller name "Elnura Alinova" is in the list
 
 
-            @getSeller @validateEmail
+            @getSeller @validateEmail @regression
               Scenario: retrieve all sellers and validate all seller email end with .com
               Given the API endpoint is "https://backend.cashwise.us/api/myaccount/sellers/all"
               When a GET request is sent
